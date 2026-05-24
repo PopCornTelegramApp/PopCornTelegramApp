@@ -758,3 +758,58 @@ body {
 .empty-state p {
   font-size: 14px;
 }
+
+/* Video.js Telegram theme customization */
+.video-wrapper {
+  width: 100%;
+  max-width: 100%;
+  background: #000;
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.video-js {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.video-js .vjs-control-bar {
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  font-family: var(--font-family);
+}
+
+.video-js .vjs-play-progress {
+  background-color: var(--button-color) !important;
+}
+
+.video-js .vjs-slider-bar {
+  background: var(--button-color) !important;
+}
+
+.video-js .vjs-big-play-button {
+  background: var(--button-color) !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 60px !important;
+  height: 60px !important;
+  line-height: 60px !important;
+  font-size: 30px !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.player-controls-bar {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--hint-color);
+  text-align: center;
+  background: var(--secondary-bg-color);
+}
+
+.player-source-label {
+  opacity: 0.8;
+}

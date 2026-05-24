@@ -10,6 +10,7 @@ const App = {
   _currentSeriesId: null,
   _genres: [],
   _allGenres: [],
+  _player: null,
 
   async init() {
     TelegramApp.init();
@@ -261,9 +262,8 @@ const App = {
       document.getElementById('btn-watch-movie').addEventListener('click', async () => {
         try {
           const stream = await api.getMovieStream(id);
-          const streamUrl = stream.url || stream.streamUrl || stream.data?.url || '';
-          if (streamUrl) {
-            this.renderPlayer(streamUrl, title);
+          if (stream.url || stream.cdnUrl) {
+            this.renderPlayer(stream, title);
           } else {
             TelegramApp.showAlert('عذراً، رابط المشاهدة غير متاح حالياً');
           }
@@ -334,8 +334,7 @@ const App = {
         watchBtn.addEventListener('click', async () => {
           try {
             const stream = await api.getEpisodeStream(id, 1, 1);
-            const streamUrl = stream.url || stream.streamUrl || '';
-            if (streamUrl) this.renderPlayer(streamUrl, title);
+            if (stream.url || stream.cdnUrl) this.renderPlayer(stream, title);
             else TelegramApp.showAlert('رابط المشاهدة غير متاح');
           } catch (e) {
             TelegramApp.showAlert('فشل: ' + e.message);
@@ -390,23 +389,68 @@ const App = {
       const data = series.series || series.data || series;
       const title = data.title || data.name || 'مسلسل';
       const stream = await api.getEpisodeStream(this._currentSeriesId, seasonNum, episodeNum);
-      const streamUrl = stream.url || stream.streamUrl || '';
-      if (streamUrl) this.renderPlayer(streamUrl, title + ' - S' + seasonNum + 'E' + episodeNum);
+      if (stream.url || stream.cdnUrl) this.renderPlayer(stream, title + ' - S' + seasonNum + 'E' + episodeNum);
       else TelegramApp.showAlert('رابط المشاهدة غير متاح');
     } catch (e) {
       TelegramApp.showAlert('فشل: ' + e.message);
     }
   },
 
-  renderPlayer(url, title) {
+  renderPlayer(streamData, title) {
     const titleEl = document.getElementById('player-title');
     if (titleEl) titleEl.textContent = title || 'المشغل';
-    const video = document.getElementById('video-player');
-    if (video) {
-      video.src = url;
-      video.load();
-    }
+    const sourceLabel = document.getElementById('player-source');
+    if (sourceLabel) sourceLabel.textContent = 'جاري التحميل...';
+
     this._showPage('page-player');
+
+    if (this._player) {
+      this._player.dispose();
+      this._player = null;
+    }
+
+    const videoEl = document.getElementById('video-player');
+
+    const trySource = (url, label) => {
+      if (sourceLabel) sourceLabel.textContent = label || 'جاري التحميل...';
+      this._player = videojs(videoEl, {
+        controls: true,
+        autoplay: true,
+        preload: 'auto',
+        fluid: true,
+        responsive: true,
+        html5: {
+          nativeControlsForTouch: false,
+          vhs: { overrideNative: true },
+        },
+        sources: [{ src: url, type: 'video/mp4' }],
+      });
+
+      this._player.on('error', () => {
+        console.warn(`[Player] ${label} failed, trying next source...`);
+        const nextUrl = streamData.url;
+        if (url !== nextUrl && nextUrl) {
+          this._player.src({ src: nextUrl, type: 'video/mp4' });
+          if (sourceLabel) sourceLabel.textContent = 'الوكيل (خادم HF)';
+        }
+      });
+
+      this._player.on('loadedmetadata', () => {
+        console.log(`[Player] Playing: ${label}`);
+        if (sourceLabel) sourceLabel.textContent = label;
+      });
+    };
+
+    const cdnUrl = streamData.cdnUrl;
+    const proxyUrl = streamData.url;
+
+    if (cdnUrl) {
+      trySource(cdnUrl, 'CDN تلغرام');
+    } else if (proxyUrl) {
+      trySource(proxyUrl, 'الوكيل (خادم HF)');
+    } else {
+      if (sourceLabel) sourceLabel.textContent = 'لا يوجد رابط متاح';
+    }
   },
 
   renderSearch() {
