@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="PopCorn - مشاهدة الأفلام والمسلسلات">
+  <meta property="og:title" content="PopCorn">
+  <meta property="og:description" content="مشاهدة الأفلام والمسلسلات">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>PopCorn</title>
+</head>
+<body>
+  <div id="app">
+    <div id="page-loading" class="page active">
+      <div class="loading-container">
+        <div class="logo">🍿</div>
+        <div class="spinner"></div>
+        <p class="loading-text">جاري التحميل...</p>
+      </div>
+    </div>
+    <div id="page-home" class="page">
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="logo-text">PopCorn</h1>
+          <span class="header-badge">🍿</span>
+        </div>
+      </header>
+      <main class="content" id="home-content">
+        <div class="container">
+          <div class="section-header">
+            <h2>الأفلام</h2>
+            <div class="genre-filter" id="genre-filter-home"></div>
+          </div>
+          <div class="movies-grid" id="movies-grid"></div>
+          <div class="load-more" id="load-more-home">
+            <button class="btn-load" id="btn-load-movies">تحميل المزيد</button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div id="page-search" class="page">
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="logo-text">بحث</h1>
+        </div>
+      </header>
+      <main class="content">
+        <div class="container">
+          <div class="search-box">
+            <input type="text" id="search-input" class="search-input" placeholder="ابحث عن فيلم أو مسلسل...">
+            <button class="search-clear" id="search-clear">✕</button>
+          </div>
+          <div class="search-tabs">
+            <button class="tab-btn active" data-tab="movies">أفلام</button>
+            <button class="tab-btn" data-tab="series">مسلسلات</button>
+          </div>
+          <div class="genre-filter" id="genre-filter-search"></div>
+          <div class="results-grid" id="results-grid"></div>
+          <div class="load-more" id="load-more-search">
+            <button class="btn-load" id="btn-load-search">تحميل المزيد</button>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div id="page-movie-detail" class="page">
+      <header class="app-header detail-header">
+        <button class="btn-back" id="btn-back-detail">← رجوع</button>
+        <h1 class="logo-text">التفاصيل</h1>
+      </header>
+      <main class="content" id="detail-content"></main>
+    </div>
+    <div id="page-player" class="page">
+      <header class="app-header player-header">
+        <button class="btn-back" id="btn-back-player">← رجوع</button>
+        <h1 class="logo-text truncate" id="player-title">المشغل</h1>
+      </header>
+      <main class="content player-content" id="player-content">
+        <div class="video-wrapper">
+          <video id="video-player" controls autoplay playsinline></video>
+        </div>
+      </main>
+    </div>
+    <div id="page-profile" class="page">
+      <header class="app-header">
+        <div class="header-content">
+          <h1 class="logo-text">الملف الشخصي</h1>
+        </div>
+      </header>
+      <main class="content">
+        <div class="container">
+          <div class="profile-card" id="profile-card">
+            <div class="profile-avatar" id="profile-avatar"></div>
+            <h2 class="profile-name" id="profile-name">مستخدم</h2>
+            <p class="profile-username" id="profile-username">@username</p>
+          </div>
+          <div class="profile-stats" id="profile-stats"></div>
+          <div class="profile-section">
+            <h3>عن التطبيق</h3>
+            <p class="about-text">PopCorn v1.0.0 - تطبيق لمشاهدة الأفلام والمسلسلات</p>
+          </div>
+        </div>
+      </main>
+    </div>
+    <div id="page-error" class="page">
+      <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h2 class="error-title">حدث خطأ</h2>
+        <p class="error-message" id="error-message"></p>
+        <button class="btn-retry" id="btn-retry">إعادة المحاولة</button>
+      </div>
+    </div>
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-btn active" data-page="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">الرئيسية</span>
+      </button>
+      <button class="nav-btn" data-page="search">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">بحث</span>
+      </button>
+      <button class="nav-btn" data-page="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">الملف</span>
+      </button>
+    </nav>
+  </div>
+  <script src="src/config.js"></script>
+  <script src="src/telegram.js"></script>
+  <script src="src/api.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
